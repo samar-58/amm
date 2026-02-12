@@ -48,10 +48,6 @@ describe("amm", () => {
       6
     );
 
-    // if (minta.toBuffer().compare(mintb.toBuffer()) > 0) {
-    //   [minta, mintb] = [mintb, minta];
-    // }
-
     seed = new anchor.BN(11);
     [config] = PublicKey.findProgramAddressSync(
       [Buffer.from("config"), seed.toArrayLike(Buffer, "le", 8)],
