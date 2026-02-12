@@ -25,5 +25,6 @@ anchor-lang = {version = "0.32.1", features = ["init-if-needed"]}
 anchor-spl = "0.32.1"
 
 constant-product-curve = { git = "https://github.com/deanmlittle/constant-product-curve.git"}
+num-integer = "0.1.46"
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(target_os, values("solana"))'] }
