@@ -1,7 +1,7 @@
-use crate::{Config, errors::AmmError, transfer_tokens};
+use crate::{Config, errors::AmmError, transfer_from_pda, transfer_tokens};
 use anchor_lang::prelude::*;
 use anchor_spl::{
-    associated_token::AssociatedToken, token_interface::{Mint, TokenAccount, TokenInterface, TransferChecked, transfer_checked}
+    associated_token::AssociatedToken, token_interface::{Mint, TokenAccount, TokenInterface}
 };
 use constant_product_curve::{ConstantProduct, LiquidityPair};
 
@@ -68,37 +68,14 @@ if is_x{
 else {
       transfer_tokens(&self.user_y, &self.mint_y_vault, &swap.deposit, &self.mint_y, &self.signer, &self.token_program)?; 
 }
-
-self.withdraw_token(!is_x, swap.withdraw)?;
-    Ok(())
-}
-
-fn withdraw_token(&self, is_x: bool, amount: u64)->Result<()>{
+//withdraw logic
 let (from, to, mint) = match is_x{
 true=>(&self.mint_x_vault, &self.user_x, &self.mint_x),
 false=>(&self.mint_y_vault, &self.user_y, &self.mint_y),
 };
 
-let config_seeds = self.config.seed.to_le_bytes();
-let accounts = TransferChecked{
-from: from.to_account_info(),
-to: to.to_account_info(),
-mint: mint.to_account_info(),
-authority: self.config.to_account_info()
-};
-
-let seeds:&[&[u8]] = &[
-b"config",
-config_seeds.as_ref(),
-&[self.config.bump]
-];
-
-let signer_seeds = &[seeds];
-let program = self.token_program.to_account_info();
-let ctx = CpiContext::new_with_signer(program, accounts, signer_seeds);
-
-transfer_checked(ctx, amount, mint.decimals)?;
-
+transfer_from_pda(from, to, &amount, mint, &self.token_program, &self.config)?;
     Ok(())
 }
+
 }
