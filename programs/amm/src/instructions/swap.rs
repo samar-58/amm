@@ -9,8 +9,8 @@ use constant_product_curve::{ConstantProduct, LiquidityPair};
 pub struct Swap<'info> {
     #[account(mut)]
 pub signer: Signer<'info>,
-pub mint_y: InterfaceAccount<'info, Mint>,
-pub mint_x: InterfaceAccount<'info, Mint>,
+pub mint_y: Box<InterfaceAccount<'info, Mint>>,
+pub mint_x: Box<InterfaceAccount<'info, Mint>>,
 #[account(
 mut,
 seeds = [b"config", config.seed.to_le_bytes().as_ref()],
@@ -23,7 +23,7 @@ associated_token::mint = mint_x,
 associated_token::authority = config,
 associated_token::token_program = token_program
 )]
-pub mint_x_vault: InterfaceAccount<'info, TokenAccount>,
+pub mint_x_vault: Box<InterfaceAccount<'info, TokenAccount>>,
 #[account(mut)]
 pub user_x: InterfaceAccount<'info, TokenAccount>,
 #[account(mut)]
@@ -34,13 +34,13 @@ associated_token::mint = mint_y,
 associated_token::authority = config,
 associated_token::token_program = token_program
 )]
-pub mint_y_vault: InterfaceAccount<'info, TokenAccount>,
+pub mint_y_vault: Box<InterfaceAccount<'info, TokenAccount>>,
 #[account(
 mut,
 seeds = [b"lp",config.key().as_ref()],
 bump = config.lp_bump,
 )]
-pub lp_token: InterfaceAccount<'info, Mint>,
+pub lp_token: Box<InterfaceAccount<'info, Mint>>,
 pub token_program: Interface<'info, TokenInterface>,
 pub associated_token_program: Program<'info, AssociatedToken>,
 pub system_program: Program<'info, System>,
