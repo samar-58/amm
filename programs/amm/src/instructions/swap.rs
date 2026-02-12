@@ -63,12 +63,13 @@ require!(swap.deposit !=0 || swap.withdraw != 0, AmmError::InvalidAmount);
 
 // deposit token logic
 if is_x{
-    transfer_tokens(&self.user_x, &self.mint_x_vault, &amount, &self.mint_x, &self.signer, &self.token_program)?;
+    transfer_tokens(&self.user_x, &self.mint_x_vault, &swap.deposit, &self.mint_x, &self.signer, &self.token_program)?;
 }
 else {
-      transfer_tokens(&self.user_y, &self.mint_y_vault, &amount, &self.mint_y, &self.signer, &self.token_program)?; 
+      transfer_tokens(&self.user_y, &self.mint_y_vault, &swap.deposit, &self.mint_y, &self.signer, &self.token_program)?; 
 }
-self.withdraw_token(is_x, amount)?;
+
+self.withdraw_token(!is_x, swap.withdraw)?;
     Ok(())
 }
 
